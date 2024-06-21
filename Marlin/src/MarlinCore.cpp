@@ -797,7 +797,8 @@ void idle(bool no_stepper_sleep/*=false*/) {
 
   // Handle Power-Loss Recovery
   #if ENABLED(POWER_LOSS_RECOVERY) && PIN_EXISTS(POWER_LOSS)
-    if (IS_SD_PRINTING()) recovery.outage();
+    //if (IS_SD_PRINTING()) recovery.outage();
+    recovery.outage();
   #endif
 
   // Run StallGuard endstop checks
@@ -870,7 +871,7 @@ void idle(bool no_stepper_sleep/*=false*/) {
  * Kill all activity and lock the machine.
  * After this the machine will need to be reset.
  */
-void kill(FSTR_P const lcd_error/*=nullptr*/, FSTR_P const lcd_component/*=nullptr*/, const bool steppers_off/*=false*/) {
+void kill(FSTR_P const lcd_error/*=nullptr*/, FSTR_P const lcd_component/*=nullptr*/, const bool steppers_off/*=true*/) {
   thermalManager.disable_all_heaters();
 
   TERN_(HAS_CUTTER, cutter.kill()); // Full cutter shutdown including ISR control
@@ -888,12 +889,14 @@ void kill(FSTR_P const lcd_error/*=nullptr*/, FSTR_P const lcd_component/*=nullp
 
   // "Error:Printer halted. kill() called!"
   SERIAL_ERROR_MSG(STR_ERR_KILLED);
-
+  
   #ifdef ACTION_ON_KILL
     hostui.kill();
   #endif
 
-  minkill(steppers_off);
+  //minkill(steppers_off);
+  minkill(true);
+
 }
 
 void minkill(const bool steppers_off/*=false*/) {

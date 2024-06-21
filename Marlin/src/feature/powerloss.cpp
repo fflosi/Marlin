@@ -289,7 +289,8 @@ void PrintJobRecovery::save(const bool force/*=false*/, const float zraise/*=POW
 
     // Save the current position, distance that Z was (or should be) raised,
     // and a flag whether the raise was already done here.
-    if (IS_SD_PRINTING()) save(true, zraise, ENABLED(BACKUP_POWER_SUPPLY));
+    //if (IS_SD_PRINTING()) save(true, zraise, ENABLED(BACKUP_POWER_SUPPLY));
+    save(true, zraise, ENABLED(BACKUP_POWER_SUPPLY));
 
     // Disable all heaters to reduce power loss
     thermalManager.disable_all_heaters();
@@ -300,8 +301,10 @@ void PrintJobRecovery::save(const bool force/*=false*/, const float zraise/*=POW
       // With backup power a retract and raise can be done now
       retract_and_lift(zraise);
     #endif
+    // Disable steppers 
+    planner.finish_and_disable();
 
-    kill(GET_TEXT_F(MSG_OUTAGE_RECOVERY));
+    //kill(GET_TEXT_F(MSG_OUTAGE_RECOVERY));
   }
 
 #endif
